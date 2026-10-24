@@ -169,7 +169,7 @@ function AdminDestinations() {
             <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap g-3">
               <div>
                 <span className="badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-pill fw-bold mb-1">
-                  🌍 Global Locations (MCA Project)
+                  🌍 Global Locations 
                 </span>
                 <h2 className="brand-font fw-bold mb-0">Manage Destinations</h2>
               </div>

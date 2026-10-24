@@ -38,13 +38,14 @@ export function AuthProvider({ children }) {
   };
 
   // Robust Registration handler: tries backend API, and falls back to local registration if offline
-  const registerAccount = async ({ name, email, password, phone, role }) => {
+  const registerAccount = async ({ name, email, password, phone, address, role }) => {
     try {
       const res = await api.post("/auth/register", {
         name,
         email,
         password,
         phone,
+        address,
         role,
       });
 
@@ -64,6 +65,7 @@ export function AuthProvider({ children }) {
         name,
         email: email.toLowerCase(),
         phone: phone || "+91 98765 00000",
+        address: address || "123 Palm Avenue, Bandra West, Mumbai",
         role: role === "admin" ? "admin" : "user",
         profileImage:
           "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80",

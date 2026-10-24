@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Packages from "./pages/Packages";
 import PackageDetails from "./pages/PackageDetails";
 import Hotels from "./pages/Hotels";
+import HotelDetails from "./pages/HotelDetails";
 import Destinations from "./pages/Destinations";
 import PlanTour from "./pages/PlanTour";
 import Gallery from "./pages/Gallery";
@@ -50,6 +51,7 @@ function App() {
             <Route path="/packages" element={<Packages />} />
             <Route path="/packages/:id" element={<PackageDetails />} />
             <Route path="/hotels" element={<Hotels />} />
+            <Route path="/hotels/:id" element={<HotelDetails />} />
             <Route path="/destinations" element={<Destinations />} />
             <Route path="/plan-tour" element={<PlanTour />} />
             <Route path="/gallery" element={<Gallery />} />

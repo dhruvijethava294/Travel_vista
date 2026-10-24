@@ -18,7 +18,8 @@ function Packages() {
   const [packages, setPackages] = useState(mockPackages);
   const [hotels, setHotels] = useState(mockHotels);
   const [loading, setLoading] = useState(true);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const packagesPerPage = 6;
   // Filters State
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [destination, setDestination] = useState(searchParams.get("destination") || "all");
@@ -29,7 +30,6 @@ function Packages() {
   // Booking Modal
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const fetchPackages = async () => {
     try {
       setLoading(true);
@@ -94,6 +94,18 @@ function Packages() {
     fetchPackages();
   }, [destination, category, maxPrice, sort]);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, destination, category, maxPrice, sort]);
+
+  const totalPages = Math.ceil(packages.length / packagesPerPage) || 1;
+
+  const startIndex = (currentPage - 1) * packagesPerPage;
+  const currentPackages = packages.slice(
+    startIndex,
+    startIndex + packagesPerPage
+  );
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     fetchPackages();
@@ -105,6 +117,7 @@ function Packages() {
     setCategory("all");
     setMaxPrice(150000);
     setSort("newest");
+    setCurrentPage(1);
     setSearchParams({});
   };
 
@@ -253,6 +266,9 @@ function Packages() {
         <div className="d-flex justify-content-between align-items-center mb-4">
           <p className="text-muted mb-0 small">
             Showing <strong>{packages.length}</strong> holiday packages available
+            {packages.length > packagesPerPage && (
+              <span> (Page {currentPage} of {totalPages})</span>
+            )}
           </p>
         </div>
 
@@ -278,16 +294,72 @@ function Packages() {
             </div>
           </div>
         ) : (
-          <div className="row g-4">
-            {packages.map((pkg) => (
-              <div className="col-lg-4 col-md-6" key={pkg._id}>
-                <PackageCard packageData={pkg} onBook={handleOpenBooking} />
-              </div>
-            ))}
-          </div>
+          <>
+            <div className="row g-4">
+              {currentPackages.map((pkg) => (
+                <div className="col-lg-4 col-md-6" key={pkg._id}>
+                  <PackageCard packageData={pkg} onBook={handleOpenBooking} />
+                </div>
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <nav aria-label="Tour packages page navigation" className="mt-5">
+                <ul className="pagination justify-content-center">
+                  <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+                    <button
+                      type="button"
+                      className="page-link"
+                      onClick={() => {
+                        setCurrentPage((prev) => Math.max(prev - 1, 1));
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}
+                      disabled={currentPage === 1}
+                    >
+                      Previous
+                    </button>
+                  </li>
+                  {Array.from({ length: totalPages }, (_, idx) => idx + 1).map((pageNum) => (
+                    <li
+                      key={pageNum}
+                      className={`page-item ${currentPage === pageNum ? "active" : ""}`}
+                    >
+                      <button
+                        type="button"
+                        className="page-link"
+                        onClick={() => {
+                          setCurrentPage(pageNum);
+                          window.scrollTo({ top: 0, behavior: "smooth" });
+                        }}
+                      >
+                        {pageNum}
+                      </button>
+                    </li>
+                  ))}
+                  <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
+                    <button
+                      type="button"
+                      className="page-link"
+                      onClick={() => {
+                        setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}
+                      
+                      
+                      disabled={currentPage === totalPages}
+                    >
+                      Next
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            )}
+          </>
         )}
       </div>
 
+      
       {/* Booking Modal */}
       <BookingModal
         isOpen={isModalOpen}

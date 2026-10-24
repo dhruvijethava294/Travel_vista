@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { User, Mail, Lock, Phone, Compass, AlertCircle, CheckCircle2, Eye, EyeOff, Sparkles } from "lucide-react";
+import { User, Mail, Lock, Phone, MapPin, Compass, AlertCircle, CheckCircle2, Eye, EyeOff, Sparkles } from "lucide-react";
 
 function Register() {
   const navigate = useNavigate();
@@ -30,6 +30,7 @@ function Register() {
         email: data.email,
         password: data.password,
         phone: data.phone || "",
+        address: data.address || "",
         role: "user",
       });
 
@@ -49,6 +50,7 @@ function Register() {
     setValue("name", "Travel Explorer");
     setValue("email", `traveler${randomNum}@travelvista.com`);
     setValue("phone", "+91 98765 43210");
+    setValue("address", "123 Palm Avenue, Bandra West, Mumbai");
     setValue("password", "password123");
   };
 
@@ -144,6 +146,23 @@ function Register() {
                       {...register("phone")}
                     />
                   </div>
+                </div>
+
+                {/* Address */}
+                <div className="mb-3">
+                  <label className="form-label small fw-bold text-muted">Residential / Street Address</label>
+                  <div className="input-group">
+                    <span className="input-group-text bg-white border-end-0">
+                      <MapPin size={18} className="text-muted" />
+                    </span>
+                    <input
+                      type="text"
+                      className={`form-control border-start-0 ${errors.address ? "is-invalid" : ""}`}
+                      placeholder="e.g. 123 Palm Avenue, Bandra West, Mumbai"
+                      {...register("address", { required: "Address is required" })}
+                    />
+                  </div>
+                  {errors.address && <small className="text-danger">{errors.address.message}</small>}
                 </div>
 
                 {/* Password */}

@@ -26,7 +26,7 @@ import {
   ShieldCheck,
   Share2,
   LogIn,
-} from "lucide-react";
+} from "lucide-react"; 
 
 function PackageDetails() {
   const { id } = useParams();

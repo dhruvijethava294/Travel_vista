@@ -8,12 +8,13 @@ import { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import api from "../services/api";
-import { User, Mail, Phone, Shield, Save, CheckCircle2, Lock, Sparkles, LogIn } from "lucide-react";
+import { User, Mail, Phone, MapPin, Shield, Save, CheckCircle2, Lock, Sparkles, LogIn } from "lucide-react";
 
 function Profile() {
   const { user, updateUser } = useContext(AuthContext);
   const [name, setName] = useState(user?.name || "");
   const [phone, setPhone] = useState(user?.phone || "");
+  const [address, setAddress] = useState(user?.address || "");
   const [profileImage, setProfileImage] = useState(user?.profileImage || "");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -25,6 +26,7 @@ function Profile() {
     if (user) {
       setName(user.name || "");
       setPhone(user.phone || "");
+      setAddress(user.address || "");
       setProfileImage(user.profileImage || "");
     }
 
@@ -47,7 +49,7 @@ function Profile() {
       setErrorMsg("");
       setSuccessMsg("");
 
-      const payload = { name, phone, profileImage };
+      const payload = { name, phone, address, profileImage };
       if (password) payload.password = password;
 
       try {
@@ -55,7 +57,7 @@ function Profile() {
         updateUser(res.data.user);
       } catch (apiErr) {
         // Fallback local update
-        updateUser({ name, phone, profileImage });
+        updateUser({ name, phone, address, profileImage });
       }
 
       setSuccessMsg("Profile updated successfully!");
@@ -166,7 +168,7 @@ function Profile() {
                   </div>
                 </div>
 
-                <div className="row g-3 mb-4">
+                <div className="row g-3 mb-3">
                   <div className="col-md-6">
                     <label className="form-label small fw-bold text-muted">Phone Number</label>
                     <div className="input-group">
@@ -191,6 +193,22 @@ function Profile() {
                       placeholder="https://..."
                       value={profileImage}
                       onChange={(e) => setProfileImage(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="mb-4">
+                  <label className="form-label small fw-bold text-muted">Residential / Street Address</label>
+                  <div className="input-group">
+                    <span className="input-group-text bg-white border-end-0">
+                      <MapPin size={16} className="text-muted" />
+                    </span>
+                    <input
+                      type="text"
+                      className="form-control border-start-0"
+                      placeholder="e.g. 123 Palm Avenue, Bandra West, Mumbai"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
                     />
                   </div>
                 </div>

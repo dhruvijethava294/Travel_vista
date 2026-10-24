@@ -35,6 +35,13 @@ function AdminHotels() {
     amenitiesStr: "Free WiFi, Infinity Pool, Spa, Free Breakfast, AC",
     contactPhone: "+91 98765 43210",
     contactEmail: "reservations@travelvista.com",
+    address: "",
+    checkInTime: "2:00 PM",
+    checkOutTime: "11:00 AM",
+    cancellationPolicy: "Free cancellation up to 48 hours before check-in",
+    reviewsCount: 24,
+    totalRooms: 20,
+    availableRooms: 15,
   };
 
   const [form, setForm] = useState(initialForm);
@@ -79,6 +86,13 @@ function AdminHotels() {
       amenitiesStr: h.amenities ? h.amenities.join(", ") : "",
       contactPhone: h.contactPhone || "",
       contactEmail: h.contactEmail || "",
+      address: h.address || h.location || "",
+      checkInTime: h.checkInTime || "2:00 PM",
+      checkOutTime: h.checkOutTime || "11:00 AM",
+      cancellationPolicy: h.cancellationPolicy || "Free cancellation up to 48 hours before check-in",
+      reviewsCount: h.reviewsCount != null ? h.reviewsCount : 24,
+      totalRooms: h.totalRooms != null ? h.totalRooms : 20,
+      availableRooms: h.availableRooms != null ? h.availableRooms : 15,
     });
     setIsModalOpen(true);
   };
@@ -118,6 +132,13 @@ function AdminHotels() {
         amenities,
         contactPhone: form.contactPhone,
         contactEmail: form.contactEmail,
+        address: form.address || form.location,
+        checkInTime: form.checkInTime,
+        checkOutTime: form.checkOutTime,
+        cancellationPolicy: form.cancellationPolicy,
+        reviewsCount: Number(form.reviewsCount) || 24,
+        totalRooms: Number(form.totalRooms) || 20,
+        availableRooms: Number(form.availableRooms) || 15,
       };
 
       try {
@@ -223,9 +244,11 @@ function AdminHotels() {
                     <thead className="table-light">
                       <tr className="small text-muted text-uppercase">
                         <th>Image</th>
-                        <th>Hotel Name</th>
+                        <th>Hotel Name & Category</th>
                         <th>Location & City</th>
                         <th>Price/Night</th>
+                        <th>Timing & Policy</th>
+                        <th>Rooms Left</th>
                         <th>Rating</th>
                         <th>Actions</th>
                       </tr>
@@ -243,12 +266,25 @@ function AdminHotels() {
                           </td>
                           <td>
                             <strong className="text-dark d-block">{h.name}</strong>
-                            <small className="text-muted">{h.roomType}</small>
+                            <small className="badge bg-light text-secondary border">{h.roomType || "Deluxe Suite"}</small>
                           </td>
-                          <td className="small">📍 {h.location}</td>
+                          <td className="small">📍 {h.location} {h.city ? `(${h.city})` : ""}</td>
                           <td className="fw-bold text-primary">₹{h.pricePerNight?.toLocaleString()}</td>
                           <td>
-                            <span className="badge bg-warning text-dark">⭐ {h.rating}</span>
+                            <small className="d-block text-dark fw-semibold">In: {h.checkInTime || "2:00 PM"} | Out: {h.checkOutTime || "11:00 AM"}</small>
+                            <small className="text-success text-truncate d-block" style={{ maxWidth: "160px" }} title={h.cancellationPolicy}>
+                              {h.cancellationPolicy || "Free cancellation"}
+                            </small>
+                          </td>
+                          <td>
+                            <span className="badge bg-light text-dark border">
+                              {h.availableRooms != null ? h.availableRooms : 15} / {h.totalRooms || 20}
+                            </span>
+                          </td>
+                          <td>
+                            <span className="badge bg-warning text-dark">
+                              ⭐ {h.rating} ({h.reviewsCount || 24})
+                            </span>
                           </td>
                           <td>
                             <div className="d-flex gap-2">
@@ -367,6 +403,105 @@ function AdminHotels() {
                         placeholder="e.g. Ocean View Villa"
                         value={form.roomType}
                         onChange={(e) => setForm({ ...form, roomType: e.target.value })}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="row g-3 mb-3">
+                    <div className="col-md-4">
+                      <label className="form-label small fw-bold">Check-in Time</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="e.g. 2:00 PM"
+                        value={form.checkInTime}
+                        onChange={(e) => setForm({ ...form, checkInTime: e.target.value })}
+                      />
+                    </div>
+                    <div className="col-md-4">
+                      <label className="form-label small fw-bold">Check-out Time</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="e.g. 11:00 AM"
+                        value={form.checkOutTime}
+                        onChange={(e) => setForm({ ...form, checkOutTime: e.target.value })}
+                      />
+                    </div>
+                    <div className="col-md-4">
+                      <label className="form-label small fw-bold">Reviews Count</label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        placeholder="e.g. 24"
+                        value={form.reviewsCount}
+                        onChange={(e) => setForm({ ...form, reviewsCount: e.target.value })}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="row g-3 mb-3">
+                    <div className="col-md-3">
+                      <label className="form-label small fw-bold">Total Rooms</label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        placeholder="e.g. 20"
+                        value={form.totalRooms}
+                        onChange={(e) => setForm({ ...form, totalRooms: e.target.value })}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <label className="form-label small fw-bold">Available Rooms</label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        placeholder="e.g. 15"
+                        value={form.availableRooms}
+                        onChange={(e) => setForm({ ...form, availableRooms: e.target.value })}
+                      />
+                    </div>
+                    <div className="col-md-6">
+                      <label className="form-label small fw-bold">Cancellation Policy</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="e.g. Free cancellation up to 48 hours before check-in"
+                        value={form.cancellationPolicy}
+                        onChange={(e) => setForm({ ...form, cancellationPolicy: e.target.value })}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="row g-3 mb-3">
+                    <div className="col-md-4">
+                      <label className="form-label small fw-bold">Hotel Email Address</label>
+                      <input
+                        type="email"
+                        className="form-control"
+                        placeholder="e.g. reservations@hotel.com"
+                        value={form.contactEmail}
+                        onChange={(e) => setForm({ ...form, contactEmail: e.target.value })}
+                      />
+                    </div>
+                    <div className="col-md-4">
+                      <label className="form-label small fw-bold">Street Address / Landmark</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="e.g. Near Benaulim Beach Road"
+                        value={form.address}
+                        onChange={(e) => setForm({ ...form, address: e.target.value })}
+                      />
+                    </div>
+                    <div className="col-md-4">
+                      <label className="form-label small fw-bold">Contact Phone</label>
+                      <input
+                        type="tel"
+                        className="form-control"
+                        placeholder="e.g. +91 98765 43210"
+                        value={form.contactPhone}
+                        onChange={(e) => setForm({ ...form, contactPhone: e.target.value })}
                       />
                     </div>
                   </div>
